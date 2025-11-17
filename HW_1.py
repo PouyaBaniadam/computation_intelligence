@@ -1,10 +1,13 @@
-import random
-
-
 class Perceptron:
-    def __init__(self, num_inputs, learning_rate=1.0):
-        self.weights = [random.uniform(-0.5, 0.5) for _ in range(num_inputs)]
-        self.bias = random.uniform(-0.5, 0.5)
+    def __init__(self, num_inputs, learning_rate=1.0, initialization_method="zero"):
+        match initialization_method:
+            case "random":
+                import random
+                self.weights = [random.uniform(-0.5, 0.5) for _ in range(num_inputs)]
+                self.bias = random.uniform(-0.5, 0.5)
+            case "zero":
+                self.weights = [0.0] * num_inputs
+                self.bias = 0.0
         self.learning_rate = learning_rate
         print(f"Perceptron initialized with {num_inputs} inputs. Initial weights: {self.weights}, bias: {self.bias}")
 
@@ -93,9 +96,6 @@ if __name__ == "__main__":
     print(PRETTY_LINE)
 
     def xor_network(inputs):
-        """
-        Simulates the full network by combining the trained neurons.
-        """
         output_y1 = neuron_y1.predict(inputs)
         output_y2 = neuron_y2.predict(inputs)
         final_output = neuron_z.predict([output_y1, output_y2])
