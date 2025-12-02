@@ -15,6 +15,16 @@ class Colors:
     BOLD = '\033[1m'
 
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 def clear_screen():
     if os.name != 'nt' and 'TERM' not in os.environ:
         os.environ['TERM'] = 'xterm'
@@ -23,7 +33,6 @@ def print_banner():
     print(f"{Colors.HEADER}{Colors.BOLD}" + "=" * 50)
     print("     Computational Intelligence - HW2 Launcher")
     print("=" * 50 + f"{Colors.ENDC}")
-
 
 def main():
     while True:
@@ -40,10 +49,10 @@ def main():
         method_name = ""
 
         if choice == '1':
-            script_to_run = "without_toolbox.py"
+            script_to_run = resource_path("without_toolbox.py")
             method_name = "Pure Python"
         elif choice == '2':
-            script_to_run = "with_toolbox.py"
+            script_to_run = resource_path("with_toolbox.py")
             method_name = "NumPy / Vectorized"
         elif choice == '0':
             print(f"\n{Colors.BLUE}Goodbye!{Colors.ENDC}")

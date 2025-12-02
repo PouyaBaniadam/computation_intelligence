@@ -1,5 +1,7 @@
 import math
+import os
 import random
+import sys
 
 from prettytable import PrettyTable
 
@@ -95,6 +97,16 @@ class NeuralNetwork:
 
         return sum([abs(e) for row in error for e in row]) / len(error)
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 def print_section(title):
     print(f"\n{Colors.HEADER}{Colors.BOLD}{'=' * 60}")
     print(f" {title}")
@@ -102,7 +114,7 @@ def print_section(title):
 
 if __name__ == "__main__":
     raw_data = []
-    filename = "dataset/jain.txt"
+    filename = resource_path(os.path.join("dataset", "jain.txt"))
 
     with open(filename, 'r') as f:
         for line in f:
