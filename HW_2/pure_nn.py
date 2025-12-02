@@ -8,13 +8,17 @@ from utils import Colors
 class NeuralNetwork:
     def __init__(self, input_size, hidden_size, output_size, learning_rate=0.1):
         self.learning_rate = learning_rate
+        # Initialize weights and biases with random values between -1 and 1
         self.W1 = [[random.uniform(a=-1, b=1) for _ in range(hidden_size)] for _ in range(input_size)]
         self.b1 = [[random.uniform(a=-1, b=1) for _ in range(hidden_size)]]
         self.W2 = [[random.uniform(a=-1, b=1) for _ in range(output_size)] for _ in range(hidden_size)]
         self.b2 = [[random.uniform(a=-1, b=1) for _ in range(output_size)]]
 
+    # --- Mathematical Helper Functions (Manual Matrix Operations) ---
+
     @staticmethod
     def sigmoid(x):
+        # Sigmoid activation function with clipping to prevent overflow
         x = max(min(x, 500), -500)
         return 1.0 / (1.0 + math.exp(-x))
 
@@ -23,6 +27,7 @@ class NeuralNetwork:
 
     @staticmethod
     def mat_mul(A, B):
+        # Standard Matrix Multiplication
         result = [[0.0] * len(B[0]) for _ in range(len(A))]
         for i in range(len(A)):
             for j in range(len(B[0])):
@@ -44,13 +49,18 @@ class NeuralNetwork:
 
     @staticmethod
     def transpose(A):
+        # Transpose matrix (swap rows and columns)
         return [[A[j][i] for j in range(len(A))] for i in range(len(A[0]))]
 
     @staticmethod
     def mat_mul_element(A, B):
+        # Element-wise multiplication (Hadamard product)
         return [[A[i][j] * B[i][j] for j in range(len(A[0]))] for i in range(len(A))]
 
+    # --- Core Network Logic ---
+
     def forward(self, x):
+        # Propagate input through hidden layer to output
         self.Z1 = self.mat_add(self.mat_mul(x, self.W1), self.b1)
         self.A1 = self.apply_sigmoid(self.Z1)
         self.Z2 = self.mat_add(self.mat_mul(self.A1, self.W2), self.b2)
@@ -58,14 +68,21 @@ class NeuralNetwork:
         return self.A2
 
     def train(self, x, y):
+        # 1. Forward Pass
         self.forward(x)
+
+        # 2. Calculate Error
         error = self.mat_sub(y, self.A2)
 
+        # 3. Backpropagation (Calculate Gradients)
+        # Derivative of sigmoid: f'(x) = f(x) * (1 - f(x))
         d_out = self.mat_mul_element(error, [[v * (1 - v) for v in r] for r in self.A2])
         err_h = self.mat_mul(d_out, self.transpose(self.W2))
         d_h = self.mat_mul_element(err_h, [[v * (1 - v) for v in r] for r in self.A1])
 
-        self.W2 = self.mat_add(self.W2, self.mat_scale(self.mat_mul(self.transpose(self.A1), d_out), self.learning_rate))
+        # 4. Update Weights and Biases
+        self.W2 = self.mat_add(self.W2,
+                               self.mat_scale(self.mat_mul(self.transpose(self.A1), d_out), self.learning_rate))
         self.b2 = self.mat_add(self.b2, self.mat_scale(d_out, self.learning_rate))
         self.W1 = self.mat_add(self.W1, self.mat_scale(self.mat_mul(self.transpose(x), d_h), self.learning_rate))
         self.b1 = self.mat_add(self.b1, self.mat_scale(d_h, self.learning_rate))
@@ -74,6 +91,7 @@ class NeuralNetwork:
 
 
 if __name__ == "__main__":
+    # Load and prepare data
     train_X, train_Y, test_X, test_Y, total = utils.load_and_process_data()
 
     utils.print_section("DATASET INFO (Pure Python)")
@@ -84,9 +102,11 @@ if __name__ == "__main__":
 
     utils.print_section(f"STARTING TRAINING ({epochs} Epochs)")
 
+    # Training Loop
     for epoch in range(epochs):
         err = 0
         for i in range(len(train_X)):
+            # Train sample by sample (Stochastic Gradient Descent)
             err += nn.train(x=[train_X[i]], y=[train_Y[i]])
 
         if epoch == 0 or epoch % 1000 == 0 or epoch == epochs - 1:
@@ -94,6 +114,7 @@ if __name__ == "__main__":
             c = Colors.GREEN if avg < 0.1 else (Colors.WARNING if avg < 0.3 else Colors.FAIL)
             print(f"Epoch {str(epoch).zfill(4)} | Error: {c}{avg:.6f}{Colors.ENDC}")
 
+    # Display Final Results
     utils.print_final_weights(nn.W1, nn.W2)
 
     utils.print_section("TEST RESULTS")

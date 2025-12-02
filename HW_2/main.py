@@ -7,6 +7,7 @@ from utils import Colors, resource_path
 
 
 def clear_screen():
+    # Cross-platform command to clear terminal (Windows: cls, Unix: clear)
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def print_banner():
@@ -28,20 +29,22 @@ def main():
         script_to_run = ""
         method_name = ""
 
-        if choice == '1':
-            script_to_run = "pure_nn.py"
-            method_name = "Pure Python"
-        elif choice == '2':
-            script_to_run = "numpy_nn.py"
-            method_name = "NumPy"
-        elif choice == '0':
-            print(f"\n{Colors.BLUE}Goodbye!{Colors.ENDC}")
-            sys.exit()
-        else:
-            print(f"\n{Colors.FAIL}Invalid choice!{Colors.ENDC}")
-            time.sleep(1)
-            continue
+        match choice:
+            case "1":
+                script_to_run = "pure_nn.py"
+                method_name = "Pure Python"
+            case "2":
+                script_to_run = "numpy_nn.py"
+                method_name = "NumPy"
+            case "0":
+                print(f"\n{Colors.BLUE}Goodbye!{Colors.ENDC}")
+                sys.exit()
+            case _:
+                print(f"\n{Colors.FAIL}Invalid choice!{Colors.ENDC}")
+                time.sleep(1)
+                continue
 
+        # Resolve absolute path (handles correct pathing for compiled .exe files)
         full_script_path = resource_path(script_to_run)
 
         if not os.path.exists(full_script_path):
@@ -54,6 +57,7 @@ def main():
         start_time = time.time()
 
         try:
+            # Dynamically execute the selected script file as the main program
             runpy.run_path(full_script_path, run_name="__main__")
         except Exception as e:
             print(f"\n{Colors.FAIL}An error occurred:{Colors.ENDC}")

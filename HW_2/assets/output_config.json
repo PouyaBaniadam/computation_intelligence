@@ -26,6 +26,10 @@
    "value": "HW_2"
   },
   {
+   "optionDest": "upx_dir",
+   "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/upx"
+  },
+  {
    "optionDest": "clean_build",
    "value": false
   },
@@ -59,14 +63,6 @@
   },
   {
    "optionDest": "datas",
-   "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/HW_2/with_toolbox.py;."
-  },
-  {
-   "optionDest": "datas",
-   "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/HW_2/without_toolbox.py;."
-  },
-  {
-   "optionDest": "datas",
    "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/HW_2/dataset;dataset/"
   },
   {
@@ -76,6 +72,18 @@
   {
    "optionDest": "hiddenimports",
    "value": "numpy"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/HW_2/numpy_nn.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/HW_2/pure_nn.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Pouya/Documents/Projects/Python/computation_intelligence/HW_2/utils.py;."
   }
  ],
  "nonPyinstallerOptions": {

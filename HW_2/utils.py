@@ -4,10 +4,10 @@ import random
 
 from prettytable import PrettyTable
 
+# Total number of training iterations
+EPOCHS = 5000
 
-EPOCHS = 8000
-
-
+# ANSI escape codes for terminal text coloring
 class Colors:
     HEADER = '\033[95m'
     BLUE = '\033[94m'
@@ -18,7 +18,7 @@ class Colors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
 
-
+# Resolves file paths for both development and compiled (.exe) environments
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
@@ -26,29 +26,36 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-
+# Prints a stylized header for output sections
 def print_section(title):
     print(f"\n{Colors.HEADER}{Colors.BOLD}{'=' * 60}")
     print(f" {title}")
     print(f"{'=' * 60}{Colors.ENDC}")
 
-
+# Loads the dataset, processes labels, normalizes features, and splits into train/test
 def load_and_process_data(filename="dataset/jain.txt", split_ratio=0.7):
     full_path = resource_path(filename)
     raw_data = []
 
-    with open(full_path, 'r') as f:
-        for line in f:
-            parts = line.strip().split()
-            if len(parts) >= 3:
-                raw_data.append([float(parts[0]), float(parts[1]), int(float(parts[2]))])
+    # Read data from file
+    try:
+        with open(full_path, 'r') as f:
+            for line in f:
+                parts = line.strip().split()
+                if len(parts) >= 3:
+                    raw_data.append([float(parts[0]), float(parts[1]), int(float(parts[2]))])
+    except FileNotFoundError:
+        print(f"{Colors.FAIL}Error: File not found at {full_path}{Colors.ENDC}")
+        sys.exit()
 
+    # Shuffle data to ensure random distribution
     random.shuffle(raw_data)
 
     X = []
     Y = []
     for row in raw_data:
         X.append(row[0:2])
+        # Map Class 2 -> 1.0, Class 1 -> 0.0
         target = 1.0 if row[2] == 2 else 0.0
         Y.append([target])
 
@@ -56,6 +63,7 @@ def load_and_process_data(filename="dataset/jain.txt", split_ratio=0.7):
         print(f"{Colors.FAIL}Error: Dataset is empty!{Colors.ENDC}")
         sys.exit()
 
+    # Manual Min-Max Normalization logic
     col1 = [row[0] for row in X]
     col2 = [row[1] for row in X]
     min1, max1 = min(col1), max(col1)
@@ -69,16 +77,18 @@ def load_and_process_data(filename="dataset/jain.txt", split_ratio=0.7):
         ]
         X_norm.append(new_row)
 
+    # Split indices based on ratio
     split_idx = int(split_ratio * len(X_norm))
 
     return (X_norm[:split_idx], Y[:split_idx],
             X_norm[split_idx:], Y[split_idx:],
             len(X_norm))
 
-
+# Displays the trained weights in a formatted table
 def print_final_weights(W1, W2):
     print_section("FINAL WEIGHTS")
 
+    # Display W1 (Input -> Hidden)
     t_w1 = PrettyTable()
     t_w1.title = "Hidden Layer Weights (W1)"
     t_w1.field_names = [f"{Colors.CYAN}Input{Colors.ENDC}"] + [f"{Colors.CYAN}H{i + 1}{Colors.ENDC}" for i in range(len(W1[0]))]
@@ -88,6 +98,7 @@ def print_final_weights(W1, W2):
     print(t_w1)
     print()
 
+    # Display W2 (Hidden -> Output)
     t_w2 = PrettyTable()
     t_w2.title = "Output Layer Weights (W2)"
     t_w2.field_names = [f"{Colors.CYAN}Hidden{Colors.ENDC}", f"{Colors.CYAN}Out{Colors.ENDC}"]
