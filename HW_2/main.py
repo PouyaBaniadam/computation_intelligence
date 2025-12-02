@@ -3,28 +3,11 @@ import os
 import time
 import runpy
 
+from utils import Colors, resource_path
 
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-
-
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-    return os.path.join(base_path, relative_path)
 
 def clear_screen():
-    if os.name != 'nt' and 'TERM' not in os.environ:
-        os.environ['TERM'] = 'xterm'
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def print_banner():
     print(f"{Colors.HEADER}{Colors.BOLD}" + "=" * 50)
@@ -37,7 +20,7 @@ def main():
         print_banner()
         print(f"\n{Colors.CYAN}Please select the implementation method:{Colors.ENDC}")
         print(f"{Colors.GREEN}[1]{Colors.ENDC} Pure Python Implementation (Without Toolbox)")
-        print(f"{Colors.GREEN}[2]{Colors.ENDC} NumPy Implementation (With Toolbox/NumPy)")
+        print(f"{Colors.GREEN}[2]{Colors.ENDC} NumPy Implementation (Vectorized/Fast)")
         print(f"{Colors.FAIL}[0]{Colors.ENDC} Exit")
 
         choice = input(f"\n{Colors.BOLD}Enter your choice (0-2): {Colors.ENDC}")
@@ -46,27 +29,34 @@ def main():
         method_name = ""
 
         if choice == '1':
-            script_to_run = resource_path("without_toolbox.py")
+            script_to_run = "pure_nn.py"
             method_name = "Pure Python"
         elif choice == '2':
-            script_to_run = resource_path("with_toolbox.py")
-            method_name = "NumPy / Vectorized"
+            script_to_run = "numpy_nn.py"
+            method_name = "NumPy"
         elif choice == '0':
             print(f"\n{Colors.BLUE}Goodbye!{Colors.ENDC}")
             sys.exit()
         else:
-            print(f"\n{Colors.FAIL}Invalid choice! Please try again.{Colors.ENDC}")
+            print(f"\n{Colors.FAIL}Invalid choice!{Colors.ENDC}")
             time.sleep(1)
             continue
+
+        full_script_path = resource_path(script_to_run)
+
+        if not os.path.exists(full_script_path):
+             print(f"\n{Colors.FAIL}Error: File '{script_to_run}' not found!{Colors.ENDC}")
+             time.sleep(2)
+             continue
 
         print(f"\n{Colors.BLUE}{Colors.BOLD}>>> Running {method_name} implementation...{Colors.ENDC}\n")
 
         start_time = time.time()
 
         try:
-            runpy.run_path(script_to_run, run_name="__main__")
+            runpy.run_path(full_script_path, run_name="__main__")
         except Exception as e:
-            print(f"\n{Colors.FAIL}An error occurred during execution:{Colors.ENDC}")
+            print(f"\n{Colors.FAIL}An error occurred:{Colors.ENDC}")
             print(e)
 
         end_time = time.time()
@@ -78,7 +68,6 @@ def main():
         print("-" * 50 + f"{Colors.ENDC}")
 
         input(f"\n{Colors.BOLD}Press Enter to return to menu...{Colors.ENDC}")
-
 
 if __name__ == "__main__":
     main()

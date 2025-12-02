@@ -12,7 +12,6 @@ class Perceptron:
         print(f"Perceptron initialized with {num_inputs} inputs. Initial weights: {self.weights}, bias: {self.bias}")
 
     def predict(self, inputs):
-        # y_in = (w1*x1 + w2*x2 + ...) + b
         return 1 if sum(w * x for w, x in zip(self.weights, inputs)) + self.bias > 0 else 0
 
     def train(self, training_data, epochs=10):
@@ -27,11 +26,9 @@ class Perceptron:
                     error_count += 1
                     error = target - prediction
 
-                    # w_new = w_old + alpha * error * x
                     for i, w in enumerate(self.weights):
                         self.weights[i] += self.learning_rate * error * inputs[i]
 
-                    # Update the bias: b_new = b_old + alpha * error
                     self.bias += self.learning_rate * error
 
             print(f"Epoch {epoch + 1}: Errors = {error_count}, Weights = {self.weights}, Bias = {self.bias}")
@@ -83,7 +80,7 @@ if __name__ == "__main__":
     data_z = [
         ([0, 0], 0),
         ([0, 1], 1),
-        ([0, 1], 1),  # Duplicate but correct for the logic as '1, 0' is an input that is never reachable!
+        ([0, 1], 1),
         ([1, 1], 0)
     ]
 
