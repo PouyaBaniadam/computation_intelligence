@@ -1,0 +1,93 @@
+{
+ "version": "auto-py-to-exe-configuration_v1",
+ "pyinstallerOptions": [
+  {
+   "optionDest": "noconfirm",
+   "value": true
+  },
+  {
+   "optionDest": "filenames",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/HW_2/main.py"
+  },
+  {
+   "optionDest": "onefile",
+   "value": true
+  },
+  {
+   "optionDest": "console",
+   "value": true
+  },
+  {
+   "optionDest": "icon_file",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/HW_2/assets/HW_2.ico"
+  },
+  {
+   "optionDest": "name",
+   "value": "HW_2"
+  },
+  {
+   "optionDest": "upx_dir",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/upx"
+  },
+  {
+   "optionDest": "clean_build",
+   "value": false
+  },
+  {
+   "optionDest": "strip",
+   "value": false
+  },
+  {
+   "optionDest": "noupx",
+   "value": false
+  },
+  {
+   "optionDest": "disable_windowed_traceback",
+   "value": false
+  },
+  {
+   "optionDest": "uac_admin",
+   "value": false
+  },
+  {
+   "optionDest": "uac_uiaccess",
+   "value": false
+  },
+  {
+   "optionDest": "argv_emulation",
+   "value": false
+  },
+  {
+   "optionDest": "bootloader_ignore_signals",
+   "value": false
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "prettytable"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy"
+  },
+  {
+   "optionDest": "datas",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/HW_2/numpy_nn.py:."
+  },
+  {
+   "optionDest": "datas",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/HW_2/pure_nn.py:."
+  },
+  {
+   "optionDest": "datas",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/HW_2/utils.py:."
+  },
+  {
+   "optionDest": "datas",
+   "value": "/home/pouya/Documents/Projects/Python/computation_intelligence/HW_2/dataset:dataset/"
+  }
+ ],
+ "nonPyinstallerOptions": {
+  "increaseRecursionLimit": true,
+  "manualArguments": ""
+ }
+}
