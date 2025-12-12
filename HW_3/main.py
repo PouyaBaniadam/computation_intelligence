@@ -115,33 +115,27 @@ def load_dataset_from_file(filename):
         iris = load_iris()
         return iris.data, iris.target
 
-    try:
-        # Check the file format based on its extension
-        if filename.endswith('.dat'):
-            skip_rows = 0
-            with open(path, 'r') as f:
-                lines = f.readlines()
-                for i, line in enumerate(lines):
-                    if line.strip().lower().startswith('@data'):
-                        skip_rows = i + 1
-                        break
-            df = pd.read_csv(path, skiprows=skip_rows, header=None)
+    if filename.endswith('.dat'):
+        skip_rows = 0
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            for i, line in enumerate(lines):
+                if line.strip().lower().startswith('@data'):
+                    skip_rows = i + 1
+                    break
+        df = pd.read_csv(path, skiprows=skip_rows, header=None)
 
-        else:
-            df = pd.read_csv(path, sep=r'\s+', header=None, engine='python')
+    else:
+        df = pd.read_csv(path, sep=r'\s+', header=None, engine='python')
 
-        df.dropna(inplace=True)
+    df.dropna(inplace=True)
 
-        data = df.values
-        X = data[:, :-1]
-        Y = data[:, -1]
+    data = df.values
+    X = data[:, :-1]
+    Y = data[:, -1]
+    Y = pd.factorize(Y)[0]
 
-        Y = pd.factorize(Y)[0]
-
-        return X, Y
-    except Exception as e:
-        print(f"{Colors.FAIL}Failed to read {filename}: {e}{Colors.ENDC}")
-        return None, None
+    return X, Y
 
 files_map = {
     'Flame': 'Flame.txt',
@@ -223,7 +217,7 @@ for ds_name, file_name in files_map.items():
 
     avg_acc = np.mean(acc_list) * 100
     avg_time = np.mean(time_list)
-    total_time = np.sum(time_list) # Calculate total time
+    total_time = np.sum(time_list)
 
     table.add_row([
         "RBF",
@@ -264,9 +258,7 @@ for ds_name, file_name in files_map.items():
 
     table.add_row(["-" * 5, "-" * 5, "-" * 5, "-" * 5, "-" * 5, "-" * 5])
 
-# Remove the last separator line
 table.del_row(len(table._rows) - 1)
 
-print(" " * 60, end="\r")
 print(f"\n{Colors.BOLD}Final Results:{Colors.ENDC}")
 print(table)
