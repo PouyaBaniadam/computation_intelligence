@@ -5,7 +5,9 @@ import random
 from prettytable import PrettyTable
 
 # Total number of training iterations
-EPOCHS = 5000
+# EPOCHS = 1000
+# EPOCHS = 2000
+EPOCHS = 3000
 
 # ANSI escape codes for terminal text coloring
 class Colors:
@@ -38,15 +40,10 @@ def load_and_process_data(filename="dataset/jain.txt", split_ratio=0.7):
     raw_data = []
 
     # Read data from file
-    try:
-        with open(full_path, 'r') as f:
-            for line in f:
-                parts = line.strip().split()
-                if len(parts) >= 3:
-                    raw_data.append([float(parts[0]), float(parts[1]), int(float(parts[2]))])
-    except FileNotFoundError:
-        print(f"{Colors.FAIL}Error: File not found at {full_path}{Colors.ENDC}")
-        sys.exit()
+    with open(full_path, 'r') as f:
+        for line in f:
+            parts = line.strip().split()
+            raw_data.append([float(parts[0]), float(parts[1]), int(float(parts[2]))])
 
     # Shuffle data to ensure random distribution
     random.shuffle(raw_data)
@@ -59,10 +56,6 @@ def load_and_process_data(filename="dataset/jain.txt", split_ratio=0.7):
         target = 1.0 if row[2] == 2 else 0.0
         Y.append([target])
 
-    if not X:
-        print(f"{Colors.FAIL}Error: Dataset is empty!{Colors.ENDC}")
-        sys.exit()
-
     # Manual Min-Max Normalization logic
     col1 = [row[0] for row in X]
     col2 = [row[1] for row in X]
@@ -71,13 +64,14 @@ def load_and_process_data(filename="dataset/jain.txt", split_ratio=0.7):
 
     X_norm = []
     for row in X:
+        # New_X = (Old_X - X_min) / (X_max - X_min)
         new_row = [
             (row[0] - min1) / (max1 - min1) if max1 != min1 else 0.0,
             (row[1] - min2) / (max2 - min2) if max2 != min2 else 0.0
         ]
         X_norm.append(new_row)
 
-    # Split indices based on ratio
+    # Split indices based on the ratio
     split_idx = int(split_ratio * len(X_norm))
 
     return (X_norm[:split_idx], Y[:split_idx],
@@ -104,5 +98,5 @@ def print_final_weights(W1, W2):
     t_w2.field_names = [f"{Colors.CYAN}Hidden{Colors.ENDC}", f"{Colors.CYAN}Out{Colors.ENDC}"]
     for i, row in enumerate(W2):
         val = row[0] if isinstance(row, list) else row
-        t_w2.add_row([f"H {i + 1}", f"{val:.4f}"])
+        t_w2.add_row([f"H{i + 1}", f"{val:.4f}"])
     print(t_w2)

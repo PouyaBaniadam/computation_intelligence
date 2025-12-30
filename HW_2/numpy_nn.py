@@ -1,5 +1,7 @@
 import numpy as np
 from prettytable import PrettyTable
+from sklearn.preprocessing import MinMaxScaler
+
 import utils
 from utils import Colors
 
@@ -13,11 +15,13 @@ class NeuralNetwork:
         self.W2 = np.random.uniform(low=-1, high=1, size=(hidden_size, output_size))
         self.b2 = np.random.uniform(low=-1, high=1, size=(1, output_size))
 
-    def sigmoid(self, x):
+    @staticmethod
+    def sigmoid(x):
         # Sigmoid activation with clipping to prevent overflow
         return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
 
-    def d_sigmoid(self, x):
+    @staticmethod
+    def d_sigmoid(x):
         # Derivative: f'(x) = f(x) * (1 - f(x))
         return x * (1 - x)
 

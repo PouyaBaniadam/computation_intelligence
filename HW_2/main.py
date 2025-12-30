@@ -47,22 +47,10 @@ def main():
         # Resolve absolute path (handles correct pathing for compiled .exe files)
         full_script_path = resource_path(script_to_run)
 
-        if not os.path.exists(full_script_path):
-             print(f"\n{Colors.FAIL}Error: File '{script_to_run}' not found!{Colors.ENDC}")
-             time.sleep(2)
-             continue
-
         print(f"\n{Colors.BLUE}{Colors.BOLD}>>> Running {method_name} implementation...{Colors.ENDC}\n")
 
         start_time = time.time()
-
-        try:
-            # Dynamically execute the selected script file as the main program
-            runpy.run_path(full_script_path, run_name="__main__")
-        except Exception as e:
-            print(f"\n{Colors.FAIL}An error occurred:{Colors.ENDC}")
-            print(e)
-
+        runpy.run_path(full_script_path, run_name="__main__")
         end_time = time.time()
         duration = end_time - start_time
 

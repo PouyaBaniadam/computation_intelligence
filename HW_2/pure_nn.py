@@ -1,5 +1,7 @@
 import math
 import random
+from time import sleep
+
 from prettytable import PrettyTable
 import utils
 from utils import Colors
@@ -26,8 +28,64 @@ class NeuralNetwork:
         return [[self.sigmoid(v) for v in r] for r in mat]
 
     @staticmethod
+    def mat_add(A, B):
+        """
+        Adds 2 matrices
+        :param A: [[... , ... , ... , ... , ... , ...]]
+        :param B: [[... , ... , ... , ... , ... , ...]]
+        """
+        result = []
+        for i in range(len(A)):
+            current_row = []
+            for j in range(len(A[0])):
+                sum_value = A[i][j] + B[i][j]
+                current_row.append(sum_value)
+            result.append(current_row)
+
+        return result
+
+    @staticmethod
+    def mat_sub(A, B):
+        """
+        Subtracts 2 matrices
+        :param A: [[... , ... , ... , ... , ... , ...]]
+        :param B: [[... , ... , ... , ... , ... , ...]]
+        """
+        result = []
+        for i in range(len(A)):
+            current_row = []
+            for j in range(len(A[0])):
+                sum_value = A[i][j] - B[i][j]
+                current_row.append(sum_value)
+            result.append(current_row)
+
+        return result
+
+    @staticmethod
+    def mat_mul_element(A, B):
+        """
+        Easy matrix multiplication!
+        :param A: [[... , ...]]
+        :param B: [[... , ...]]
+        """
+        result = []
+
+        for i in range(len(A)):
+            current_row = []
+            for j in range(len(A[0])):
+                mul_value = A[i][j] * B[i][j]
+
+                current_row.append(mul_value)
+
+            result.append(current_row)
+
+        return result
+
+    @staticmethod
     def mat_mul(A, B):
-        # Standard Matrix Multiplication
+        """
+        Hard matrix multiplication!
+        """
         result = [[0.0] * len(B[0]) for _ in range(len(A))]
         for i in range(len(A)):
             for j in range(len(B[0])):
@@ -36,26 +94,41 @@ class NeuralNetwork:
         return result
 
     @staticmethod
-    def mat_add(A, B):
-        return [[A[i][j] + B[i][j] for j in range(len(A[0]))] for i in range(len(A))]
-
-    @staticmethod
-    def mat_sub(A, B):
-        return [[A[i][j] - B[i][j] for j in range(len(A[0]))] for i in range(len(A))]
-
-    @staticmethod
     def mat_scale(A, s):
-        return [[v * s for v in r] for r in A]
+        """
+        Scale a matrix
+        [[X , Y , Z]] -> [[sX , sY , sZ]]
+        :param A: [[X , Y , Z]]
+        :param s: int
+        """
+        result = []
+        for row in A:
+            new_row = []
+
+            for v in row:
+                scaled_value = v * s
+                new_row.append(scaled_value)
+
+            result.append(new_row)
+
+        return result
 
     @staticmethod
     def transpose(A):
-        # Transpose matrix (swap rows and columns)
-        return [[A[j][i] for j in range(len(A))] for i in range(len(A[0]))]
+        rows = len(A)
+        cols = len(A[0])
+        result = []
 
-    @staticmethod
-    def mat_mul_element(A, B):
-        # Element-wise multiplication (Hadamard product)
-        return [[A[i][j] * B[i][j] for j in range(len(A[0]))] for i in range(len(A))]
+        for i in range(cols):
+            new_row = []
+
+            for j in range(rows):
+                val = A[j][i]
+                new_row.append(val)
+
+            result.append(new_row)
+
+        return result
 
     # --- Core Network Logic ---
 
@@ -81,8 +154,7 @@ class NeuralNetwork:
         d_h = self.mat_mul_element(err_h, [[v * (1 - v) for v in r] for r in self.A1])
 
         # 4. Update Weights and Biases
-        self.W2 = self.mat_add(self.W2,
-                               self.mat_scale(self.mat_mul(self.transpose(self.A1), d_out), self.learning_rate))
+        self.W2 = self.mat_add(self.W2, self.mat_scale(self.mat_mul(self.transpose(self.A1), d_out), self.learning_rate))
         self.b2 = self.mat_add(self.b2, self.mat_scale(d_out, self.learning_rate))
         self.W1 = self.mat_add(self.W1, self.mat_scale(self.mat_mul(self.transpose(x), d_h), self.learning_rate))
         self.b1 = self.mat_add(self.b1, self.mat_scale(d_h, self.learning_rate))

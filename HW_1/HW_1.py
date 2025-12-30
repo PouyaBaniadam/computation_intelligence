@@ -1,4 +1,8 @@
 class Perceptron:
+    """
+    Cannot learn xor by itself, so we use a trick.
+    Xor = | but not !&
+    """
     def __init__(self, num_inputs, learning_rate=1.0, initialization_method="zero"):
         match initialization_method:
             case "random":
@@ -12,7 +16,17 @@ class Perceptron:
         print(f"Perceptron initialized with {num_inputs} inputs. Initial weights: {self.weights}, bias: {self.bias}")
 
     def predict(self, inputs):
-        return 1 if sum(w * x for w, x in zip(self.weights, inputs)) + self.bias > 0 else 0
+        weighted_sum = 0
+
+        for w, x in zip(self.weights, inputs):
+            weighted_sum += (w * x)
+
+        # W1X1 + W2X2 + ... + B
+        total_activation = weighted_sum + self.bias
+
+        if total_activation > 0: # Step function threshold
+            return 1
+        return 0
 
     def train(self, training_data, epochs=10):
         print(f"\n--- Starting Training ---")
@@ -26,9 +40,11 @@ class Perceptron:
                     error_count += 1
                     error = target - prediction
 
-                    for i, w in enumerate(self.weights):
-                        self.weights[i] += self.learning_rate * error * inputs[i]
+                    for index, weight in enumerate(self.weights):
+                        # Weight_new = Weight_old + (LearningRate * Error * Input)
+                        self.weights[index] += self.learning_rate * error * inputs[index]
 
+                    # Bias_new = Bias_old + (LearningRate * Error)
                     self.bias += self.learning_rate * error
 
             print(f"Epoch {epoch + 1}: Errors = {error_count}, Weights = {self.weights}, Bias = {self.bias}")
