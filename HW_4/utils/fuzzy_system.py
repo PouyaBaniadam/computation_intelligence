@@ -1,3 +1,5 @@
+from time import sleep
+
 import numpy as np
 
 
@@ -19,24 +21,23 @@ class SimpleMamdaniFIS:
 
     def fit(self, train_data):
         X = train_data[:, :2]  # Inputs: X1, X2
-        y = train_data[:, 2]  # Output
+        Y = train_data[:, 2]  # Output
 
         # 1. Define the domain and centers for inputs and output
         self.centers['x1'] = self._create_centers(1, 10)
         self.centers['x2'] = self._create_centers(1, 10)
-        self.centers['y'] = self._create_centers(np.min(y), np.max(y))
+        self.centers['y'] = self._create_centers(np.min(Y), np.max(Y))
 
         # Width of membership functions (distance between two centers)
         width_x = self.centers['x1'][1] - self.centers['x1'][0]
-        width_y = self.centers['y'][1] - self.centers['y'][0]
 
         # 2. Generate rules from the data
-        for i in range(len(y)):
+        for i in range(len(Y)):
             # Find the nearest membership function for each input/output
             # argmin calculates the distance and returns the index of the nearest center
             idx_x1 = np.argmin(np.abs(X[i, 0] - self.centers['x1']))
             idx_x2 = np.argmin(np.abs(X[i, 1] - self.centers['x2']))
-            idx_y = np.argmin(np.abs(y[i] - self.centers['y']))
+            idx_y = np.argmin(np.abs(Y[i] - self.centers['y']))
 
             # Calculate the rule strength degree (product of membership degrees)
             mu_x1 = self._membership(X[i, 0], self.centers['x1'][idx_x1], width_x)
@@ -48,8 +49,7 @@ class SimpleMamdaniFIS:
             # If a rule with this condition already exists, keep the one with the higher degree
             if rule_key not in self.rules:
                 self.rules[rule_key] = (idx_y, degree)
-            else:
-                if degree > self.rules[rule_key][1]:
+            elif degree > self.rules[rule_key][1]:
                     self.rules[rule_key] = (idx_y, degree)
 
     def predict(self, test_data, use_fuzzy_output=True):
@@ -59,9 +59,11 @@ class SimpleMamdaniFIS:
         for i in range(len(test_data)):
             x1_val, x2_val = test_data[i, 0], test_data[i, 1]
 
+            # Fuzzy calculations
             numerator = 0.0
             denominator = 0.0
 
+            # Not fuzzy calculations
             max_fire = 0.0
             best_output = 0.0
 
