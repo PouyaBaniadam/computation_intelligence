@@ -28,7 +28,6 @@ class SimpleMamdaniFIS:
 
         # Width of membership functions (distance between two centers)
         width_x = self.centers['x1'][1] - self.centers['x1'][0]
-        width_y = self.centers['y'][1] - self.centers['y'][0]
 
         # 2. Generate rules from the data
         for i in range(len(y)):
