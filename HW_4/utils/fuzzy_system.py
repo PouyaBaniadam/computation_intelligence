@@ -15,6 +15,10 @@ class SimpleMamdaniFIS:
 
     @staticmethod
     def _membership(x, center, width):
+        """
+        Calculates the Triangular Membership Degree (mu) for a given input x.
+        Formula: mu(x) = max(0, 1 - |x - c| / w)
+        """
         return np.maximum(0, 1 - np.abs(x - center) / width)
 
     def fit(self, train_data):
